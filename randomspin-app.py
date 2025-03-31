@@ -6,6 +6,73 @@ from docx import Document
 import openpyxl
 from io import BytesIO
 
+# Configuration de la page
+st.set_page_config(
+    page_title="Générateur de Spins",
+    page_icon="🔄",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# CSS personnalisé
+st.markdown("""
+<style>
+    .main-header {
+        font-size: 2.5rem;
+        color: #3366FF;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    .sub-header {
+        font-size: 1.8rem;
+        color: #0047AB;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    .file-upload-container {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .preview-container {
+        background-color: #eef2f7;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+    }
+    .stButton>button {
+        background-color: #3366FF;
+        color: white;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+    }
+    .stButton>button:hover {
+        background-color: #0047AB;
+    }
+    .download-button {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .stExpander {
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    .stTextArea>div>div {
+        background-color: white;
+        border-radius: 5px;
+    }
+    .footer {
+        text-align: center;
+        color: #888888;
+        margin-top: 50px;
+        font-size: 0.8rem;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 class SpinGenerator:
     def __init__(self):
         self.variable_pattern = r'\$(\w+)'
