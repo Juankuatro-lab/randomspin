@@ -1,8 +1,8 @@
-# Générateur de Spuns (Spun Generator)
+# Générateur de Spins (Spin Generator)
 
 ## Description
 
-Ce projet est une application Streamlit qui permet de générer des variations de texte (spuns) en utilisant des modèles de texte prédéfinis et des variables personnalisables.
+Ce projet est une application Streamlit qui permet de générer des variations de texte (spins) en utilisant des modèles de texte prédéfinis et des variables personnalisables.
 
 ## Fonctionnalités principales
 
