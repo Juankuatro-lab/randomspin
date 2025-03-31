@@ -6,7 +6,7 @@ from docx import Document
 import openpyxl
 from io import BytesIO
 
-class SpunGenerator:
+class SpinGenerator:
     def __init__(self):
         self.variable_pattern = r'\$(\w+)'
 
@@ -92,8 +92,8 @@ class SpunGenerator:
         
         return result
 
-    def generate_spun(self, text, variables_dict):
-        """Génère un spun complet en appliquant les règles dans l'ordre"""
+    def generate_spin(self, text, variables_dict):
+        """Génère un spin complet en appliquant les règles dans l'ordre"""
         text = self.process_paragraph_options(text)
         text = self.process_simple_options(text)
         text = self.replace_variables(text, variables_dict)
@@ -114,49 +114,49 @@ def process_input_file(file_bytes):
         st.error(f"Erreur lors de la lecture du fichier: {str(e)}")
         raise
 
-def generate_spuns(input_text, df_variables, num_spuns):
-    """Génère les spuns et retourne un DataFrame"""
-    generator = SpunGenerator()
+def generate_spins(input_text, df_variables, num_spins):
+    """Génère les spins et retourne un DataFrame"""
+    generator = SpinGenerator()
     results = []
     
     for index, row in df_variables.iterrows():
-        if index >= num_spuns:
+        if index >= num_spins:
             break
         
         variables_dict = row.to_dict()
-        spun_text = generator.generate_spun(input_text, variables_dict)
-        spun_text = spun_text.replace('###devider###', '###devider###\n')
-        results.append([index + 1, spun_text])
+        spin_text = generator.generate_spin(input_text, variables_dict)
+        spin_text = spin_text.replace('###devider###', '###devider###\n')
+        results.append([index + 1, spin_text])
     
-    return pd.DataFrame(results, columns=['Spun_ID', 'Texte_Généré'])
+    return pd.DataFrame(results, columns=['Spin_ID', 'Texte_Généré'])
 
 def create_streamlit_app():
-    st.title("Générateur de Spuns")
+    st.title("Générateur de Spins")
     
     # Upload des fichiers
     text_file = st.file_uploader("Fichier texte (.txt ou .docx)", type=['txt', 'docx'])
     excel_file = st.file_uploader("Fichier Excel des variables", type=['xlsx'])
     
-    # Nombre de spuns à générer
-    num_spuns = st.number_input("Nombre de spuns à générer", min_value=1, value=1)
+    # Nombre de spins à générer
+    num_spins = st.number_input("Nombre de spins à générer", min_value=1, value=1)
     
     # Prévisualisation
-    preview_count = st.number_input("Nombre de spuns à prévisualiser", min_value=1, max_value=5, value=1)
+    preview_count = st.number_input("Nombre de spins à prévisualiser", min_value=1, max_value=5, value=1)
     
-    if st.button("Générer les spuns") and text_file and excel_file:
+    if st.button("Générer les spins") and text_file and excel_file:
         try:
-            with st.spinner('Génération des spuns en cours...'):
+            with st.spinner('Génération des spins en cours...'):
                 # Lecture des fichiers
                 input_text = process_input_file(text_file)
                 df_variables = pd.read_excel(excel_file)
                 
-                # Génération des spuns
-                df_results = generate_spuns(input_text, df_variables, num_spuns)
+                # Génération des spins
+                df_results = generate_spins(input_text, df_variables, num_spins)
                 
                 # Affichage de la prévisualisation
-                st.subheader("Prévisualisation des spuns générés")
+                st.subheader("Prévisualisation des spins générés")
                 for i in range(min(preview_count, len(df_results))):
-                    with st.expander(f"Spun #{df_results.iloc[i]['Spun_ID']}", expanded=i==0):
+                    with st.expander(f"Spin #{df_results.iloc[i]['Spin_ID']}", expanded=i==0):
                         st.text_area(
                             "Texte généré",
                             value=df_results.iloc[i]['Texte_Généré'],
@@ -171,9 +171,9 @@ def create_streamlit_app():
                 
                 # Bouton de téléchargement
                 st.download_button(
-                    label="Télécharger tous les spuns générés",
+                    label="Télécharger tous les spins générés",
                     data=output,
-                    file_name="spuns_generes.xlsx",
+                    file_name="spins_generes.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
         
