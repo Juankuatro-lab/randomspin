@@ -198,21 +198,69 @@ def generate_spins(input_text, df_variables, num_spins):
     return pd.DataFrame(results, columns=['Spin_ID', 'Texte_Généré'])
 
 def create_streamlit_app():
-    st.title("Générateur de Spins")
+    # Logo et titre
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("<h1 class='main-header'>🔄 Générateur de Spins</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #666;'>Créez facilement des variations de texte avec notre outil de spinning intelligent</p>", unsafe_allow_html=True)
     
-    # Upload des fichiers
-    text_file = st.file_uploader("Fichier texte (.txt ou .docx)", type=['txt', 'docx'])
-    excel_file = st.file_uploader("Fichier Excel des variables", type=['xlsx'])
+    # Séparateur visuel
+    st.markdown("<hr style='margin: 30px 0'>", unsafe_allow_html=True)
     
-    # Nombre de spins à générer
-    num_spins = st.number_input("Nombre de spins à générer", min_value=1, value=1)
+    # Interface divisée en colonnes
+    col1, col2 = st.columns([1, 1])
     
-    # Prévisualisation
-    preview_count = st.number_input("Nombre de spins à prévisualiser", min_value=1, max_value=5, value=1)
+    with col1:
+        st.markdown("<div class='file-upload-container'>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color: #3366FF;'>📁 Fichiers d'entrée</h3>", unsafe_allow_html=True)
+        
+        # Upload des fichiers
+        text_file = st.file_uploader("Fichier texte modèle (.txt ou .docx)", type=['txt', 'docx'])
+        excel_file = st.file_uploader("Fichier Excel des variables", type=['xlsx'])
+        
+        # Informations utiles
+        if not text_file:
+            st.info("📝 Téléchargez votre fichier de modèle contenant le texte à transformer")
+        
+        if not excel_file:
+            st.info("📊 Téléchargez votre fichier Excel contenant les variables à insérer")
+        
+        st.markdown("</div>", unsafe_allow_html=True)
     
-    if st.button("Générer les spins") and text_file and excel_file:
+    with col2:
+        st.markdown("<div class='file-upload-container'>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color: #3366FF;'>⚙️ Configuration</h3>", unsafe_allow_html=True)
+        
+        # Nombre de spins à générer
+        num_spins = st.number_input("Nombre de spins à générer", min_value=1, value=5, help="Nombre total de variations à créer")
+        
+        # Prévisualisation
+        preview_count = st.number_input("Nombre de spins à prévisualiser", min_value=1, max_value=5, value=2, help="Nombre de variations à afficher dans l'aperçu")
+        
+        # Options avancées (exemple)
+        with st.expander("Options avancées"):
+            st.checkbox("Conserver la mise en forme d'origine", value=True)
+            st.checkbox("Éliminer les doublons", value=True)
+        
+        st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Bouton de génération
+    st.markdown("<div style='text-align: center; margin: 30px 0;'>", unsafe_allow_html=True)
+    generate_button = st.button("Générer les spins")
+    st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Traitement et génération des spins
+    if generate_button and text_file and excel_file:
         try:
-            with st.spinner('Génération des spins en cours...'):
+            with st.spinner('🔄 Génération des spins en cours...'):
+                # Affichage d'une barre de progression
+                progress_bar = st.progress(0)
+                for i in range(100):
+                    # Simuler le traitement
+                    import time
+                    time.sleep(0.01)
+                    progress_bar.progress(i + 1)
+                
                 # Lecture des fichiers
                 input_text = process_input_file(text_file)
                 df_variables = pd.read_excel(excel_file)
@@ -220,16 +268,38 @@ def create_streamlit_app():
                 # Génération des spins
                 df_results = generate_spins(input_text, df_variables, num_spins)
                 
+                # Message de succès
+                st.success(f"✅ {len(df_results)} spins ont été générés avec succès!")
+                
                 # Affichage de la prévisualisation
-                st.subheader("Prévisualisation des spins générés")
-                for i in range(min(preview_count, len(df_results))):
-                    with st.expander(f"Spin #{df_results.iloc[i]['Spin_ID']}", expanded=i==0):
+                st.markdown("<div class='preview-container'>", unsafe_allow_html=True)
+                st.markdown("<h2 class='sub-header'>📋 Prévisualisation des spins générés</h2>", unsafe_allow_html=True)
+                
+                # Tabs pour la navigation entre les aperçus
+                tabs = st.tabs([f"Spin #{df_results.iloc[i]['Spin_ID']}" for i in range(min(preview_count, len(df_results)))])
+                
+                for i, tab in enumerate(tabs):
+                    with tab:
                         st.text_area(
                             "Texte généré",
                             value=df_results.iloc[i]['Texte_Généré'],
-                            height=200,
+                            height=300,
                             disabled=True
                         )
+                
+                # Statistiques sur les spins générés
+                st.markdown("<h3 style='color: #3366FF; margin-top: 30px;'>📊 Statistiques</h3>", unsafe_allow_html=True)
+                
+                stat_col1, stat_col2, stat_col3 = st.columns(3)
+                with stat_col1:
+                    st.metric(label="Total de spins générés", value=len(df_results))
+                with stat_col2:
+                    # Calcul de la longueur moyenne des textes générés
+                    avg_length = sum(len(text) for text in df_results['Texte_Généré']) / len(df_results)
+                    st.metric(label="Longueur moyenne", value=f"{int(avg_length)} caractères")
+                with stat_col3:
+                    # Nombre de variables utilisées
+                    st.metric(label="Variables utilisées", value=len(df_variables.columns))
                 
                 # Création du fichier Excel pour le téléchargement
                 output = BytesIO()
@@ -237,15 +307,21 @@ def create_streamlit_app():
                 output.seek(0)
                 
                 # Bouton de téléchargement
+                st.markdown("<div class='download-button'>", unsafe_allow_html=True)
                 st.download_button(
-                    label="Télécharger tous les spins générés",
+                    label="📥 Télécharger tous les spins générés",
                     data=output,
                     file_name="spins_generes.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
+                st.markdown("</div>", unsafe_allow_html=True)
+                st.markdown("</div>", unsafe_allow_html=True)
         
         except Exception as e:
-            st.error(f"Une erreur s'est produite: {str(e)}")
+            st.error(f"❌ Une erreur s'est produite: {str(e)}")
+    
+    # Footer
+    st.markdown("<div class='footer'>Générateur de Spins • Développé avec Streamlit • © 2025</div>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     create_streamlit_app()
