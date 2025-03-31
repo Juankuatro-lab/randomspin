@@ -84,11 +84,3 @@ Bonjour, je m'appelle $nom et j'ai {26|27|28} ans.
 ## Contribution
 
 Les contributions sont les bienvenues ! Veuillez soumettre une pull request ou ouvrir une issue.
-
-## Licence
-
-[Spécifiez votre licence ici]
-
-## Contact
-
-[Vos informations de contact]
