@@ -25,8 +25,8 @@ Ce projet est une application Streamlit qui permet de générer des variations d
 
 1. Clonez le dépôt :
 ```bash
-git clone https://github.com/votre-utilisateur/spun-generator.git
-cd spun-generator
+git clone https://github.com/votre-utilisateur/spin-generator.git
+cd spin-generator
 ```
 
 2. Installez les dépendances :
@@ -48,12 +48,12 @@ pip install -r requirements.txt
 2. **Fichier Excel des variables** (.xlsx) :
    - Contient les valeurs pour les variables du modèle
    - Chaque colonne représente une variable
-   - Chaque ligne sera utilisée pour générer un spun unique
+   - Chaque ligne sera utilisée pour générer un spin unique
 
 ### Lancement de l'application
 
 ```bash
-streamlit run spun_generator.py
+streamlit run spin_generator.py
 ```
 
 ## Syntaxe de spinning
@@ -84,3 +84,11 @@ Bonjour, je m'appelle $nom et j'ai {26|27|28} ans.
 ## Contribution
 
 Les contributions sont les bienvenues ! Veuillez soumettre une pull request ou ouvrir une issue.
+
+## Licence
+
+[Spécifiez votre licence ici]
+
+## Contact
+
+[Vos informations de contact]
